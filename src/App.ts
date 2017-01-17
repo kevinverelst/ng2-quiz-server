@@ -1,7 +1,7 @@
-import * as path from 'path';
 import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
+import HeroRouter from "./routes/QuestionRouter";
 
 class App {
 
@@ -28,6 +28,8 @@ class App {
             });
         });
         this.express.use('/', router);
+        this.express.use('/api/v1/questions', HeroRouter)
     }
 }
+
 export default new App().express;
