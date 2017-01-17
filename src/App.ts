@@ -5,6 +5,7 @@ import * as bodyParser from 'body-parser';
 
 class App {
 
+
     public express: express.Application;
 
     constructor() {
