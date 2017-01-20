@@ -7,9 +7,16 @@ import ErrnoException = NodeJS.ErrnoException;
 debug('ts-express:server');
 
 const port = normalizePort(process.env.PORT || 3000);
-App.set('port', port);
-
 const server = http.createServer(App);
+import * as firebase from "firebase-admin";
+
+// firebase.initializeApp({
+//     credential: admin.credential.cert(require("./serviceAccount.json")),
+//     databaseURL: "https://ng-quiz-462b4.firebaseio.com"
+// });
+console.log('initializedApp');
+
+App.set('port', port);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);

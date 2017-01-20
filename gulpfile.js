@@ -10,7 +10,7 @@ gulp.task('scripts', () => {
 });
 
 gulp.task('watch', ['scripts'], () => {
-    gulp.watch('src/**?*.ts', ['scripts']);
+    gulp.watch('src/**/*.ts', ['scripts']);
 });
 
 gulp.task('default', ['watch']);
