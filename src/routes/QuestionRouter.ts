@@ -1,13 +1,14 @@
 import {Router, Request, Response, NextFunction} from 'express';
 import * as firebase from "firebase-admin";
 import {serviceAccount} from "../serviceAccount";
+import {FirebaseService} from "../common/firebase.service";
+import {Question} from "../models/question";
+import {QuestionDTO} from "../models/dto/questionDTO";
 
 const QUESTIONS = [{id: 1}];
 
 export class QuestionRouter {
     router: Router;
-    db;
-    questions;
 
     constructor() {
         this.router = Router();
@@ -17,25 +18,23 @@ export class QuestionRouter {
             credential: firebase.credential.cert(serviceAccount),
             databaseURL: "https://ng-quiz-462b4.firebaseio.com"
         });
-        this.db = firebase.database();
-        this.questions = this.db.ref("questions");
     }
 
     public create(req: Request, res: Response) {
         debugger;
         console.log(req);
-        // this.questions.set({
-        //     question: req.body.question,
-        //     answers: req.body.answers,
-        //     correctAnswer: req.body.correctAnswer
-        // });
-        // let question = req.body;
-        // res.status(200)
-        //     .send({
-        //         message: 'Success',
-        //         status: res.status,
-        //         question
-        //     })
+        let questionDTO: QuestionDTO = req.body;
+        let question: Question = Object.assign(new Question(), questionDTO);
+        let questions = FirebaseService.getFirebaseRef('questions');
+        questions.set({
+            question
+        });
+        res.status(200)
+            .send({
+                message: 'Success',
+                status: res.status,
+                question
+            })
     }
 
     public getAll(req: Request, res: Response, next: NextFunction) {
@@ -60,6 +59,10 @@ export class QuestionRouter {
                     status: res.status
                 });
         }
+    }
+
+    private getFirebaseReference() {
+
     }
 
     init() {
