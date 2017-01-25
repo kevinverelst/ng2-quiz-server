@@ -4,6 +4,7 @@ import {serviceAccount} from "../serviceAccount";
 import {FirebaseService} from "../common/firebase.service";
 import {Question} from "../models/question";
 import {QuestionDTO} from "../models/dto/questionDTO";
+import {QuestionService} from "../repo/question.service";
 
 const QUESTIONS = [{id: 1}];
 
@@ -30,6 +31,7 @@ export class QuestionRouter {
             question
         });
         res.status(200)
+
             .send({
                 message: 'Success',
                 status: res.status,
@@ -38,7 +40,24 @@ export class QuestionRouter {
     }
 
     public getAll(req: Request, res: Response, next: NextFunction) {
-        res.send(QUESTIONS);
+        // res.send(QUESTIONS);
+        let db = firebase.database();
+        db.ref('questions/question').on('value', (snapshot) => {
+
+            console.log('snapshot: ', snapshot.val());
+            // let questions: Question[] = [];
+            // for (let questionDTO in questionDTOWrapper) {
+            //     questions.push(Object.assign(new Question(), questionDTO))
+            // }
+
+            // console.log('questions: ', questions);
+            res.status(200)
+                .send({
+                    message: 'Success',
+                    status: res.status,
+                });
+        });
+
     }
 
     public getOne(req: Request, res: Response, next: NextFunction) {
