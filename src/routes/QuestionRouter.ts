@@ -22,39 +22,52 @@ export class QuestionRouter {
     }
 
     public create(req: Request, res: Response) {
-        debugger;
-        console.log(req);
         let questionDTO: QuestionDTO = req.body;
         let question: Question = Object.assign(new Question(), questionDTO);
-        let questions = FirebaseService.getFirebaseRef('questions');
-        questions.set({
-            question
+        FirebaseService.getFirebaseRef('questions').push({
+            question: question.question,
+            answers: question.answers,
+            correctAnswer: question.correctAnswer,
+            dateCreated: question.dateCreated,
+            createdBy: question.createdBy
+        }, function (error) {
+            if (error) {
+                console.error('Data could not be written');
+                res.status(500)
+                    .send({
+                        message: 'Data could not be written',
+                        status: res.status
+                    })
+            } else {
+                res.status(200)
+                    .send({
+                        message: 'Success',
+                        status: res.status,
+                        question
+                    })
+            }
         });
-        res.status(200)
 
-            .send({
-                message: 'Success',
-                status: res.status,
-                question
-            })
     }
 
     public getAll(req: Request, res: Response, next: NextFunction) {
         // res.send(QUESTIONS);
         let db = firebase.database();
-        db.ref('questions/question').on('value', (snapshot) => {
+        db.ref('questions').on('value', (snapshot) => {
 
             console.log('snapshot: ', snapshot.val());
-            // let questions: Question[] = [];
-            // for (let questionDTO in questionDTOWrapper) {
-            //     questions.push(Object.assign(new Question(), questionDTO))
-            // }
+
+            let questions: Question[] = [];
+            for (let questionDTO in snapshot.val()) {
+                questions.push(Object.assign(new Question(), questionDTO))
+            }
 
             // console.log('questions: ', questions);
             res.status(200)
                 .send({
                     message: 'Success',
                     status: res.status,
+                    questions
                 });
         });
 
